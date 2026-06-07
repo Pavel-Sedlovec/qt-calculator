@@ -1,14 +1,16 @@
 #include "mainwindow.h"
 #include "core.h"
 
-void MainWindow::OnClick() {
-    QPushButton* but = (QPushButton*)sender();
+void MainWindow::OnClick()
+{
+    QPushButton *but = (QPushButton *) sender();
     QString str = m_lineEdit->text();
     str += but->text();
     m_lineEdit->setText(str);
 }
 
-void MainWindow::onClick_equally() {
+void MainWindow::onClick_equally()
+{
     try {
         std::vector<Token> vec = tokenize(m_lineEdit->text().toStdString());
 
@@ -22,11 +24,9 @@ void MainWindow::onClick_equally() {
 
         qDebug() << res;
         m_lineEdit->setText(QString::number(res));
-    }
-    catch (const std::runtime_error& error) {
+    } catch (const std::runtime_error &error) {
         m_lineEdit->setText("Error: " + QString::fromStdString(error.what()));
     }
-
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -60,7 +60,6 @@ MainWindow::MainWindow(QWidget *parent)
     m_multiply = new QPushButton("*");
     m_equally = new QPushButton("=");
 
-
     //connect(m_lineEdit, &QLineEdit::textChanged, m_num_1, &QPushButton::setText);
 
     connect(m_num_1, &QPushButton::clicked, this, &MainWindow::OnClick);
@@ -74,11 +73,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_num_9, &QPushButton::clicked, this, &MainWindow::OnClick);
     connect(m_num_0, &QPushButton::clicked, this, &MainWindow::OnClick);
 
-    connect(m_div, &QPushButton::clicked, this,      &MainWindow::OnClick);
-    connect(m_sum, &QPushButton::clicked, this,      &MainWindow::OnClick);
-    connect(m_minus, &QPushButton::clicked, this,    &MainWindow::OnClick);
+    connect(m_div, &QPushButton::clicked, this, &MainWindow::OnClick);
+    connect(m_sum, &QPushButton::clicked, this, &MainWindow::OnClick);
+    connect(m_minus, &QPushButton::clicked, this, &MainWindow::OnClick);
     connect(m_multiply, &QPushButton::clicked, this, &MainWindow::OnClick);
-    connect(m_equally, &QPushButton::clicked, this,  &MainWindow::onClick_equally);
+    connect(m_equally, &QPushButton::clicked, this, &MainWindow::onClick_equally);
 
     m_grid->addWidget(m_lineEdit, 0, 0, 1, 3);
     m_grid->addWidget(m_num_1, 1, 0);
@@ -93,17 +92,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_grid->addWidget(m_num_0, 4, 0, 1, 3);
 
-    m_grid->addWidget(m_div,      1, 3);
-    m_grid->addWidget(m_sum,      2, 3);
-    m_grid->addWidget(m_minus,    3, 3);
+    m_grid->addWidget(m_div, 1, 3);
+    m_grid->addWidget(m_sum, 2, 3);
+    m_grid->addWidget(m_minus, 3, 3);
     m_grid->addWidget(m_multiply, 4, 3);
-    m_grid->addWidget(m_equally,  0, 3);
+    m_grid->addWidget(m_equally, 0, 3);
 
     this->setCentralWidget(m_widget);
 }
 
-MainWindow::~MainWindow()
-{
-
-}
-
+MainWindow::~MainWindow() {}

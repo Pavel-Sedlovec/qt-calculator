@@ -1,12 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
 #include <QDebug>
-#include <QtWidgets>
+#include <QMainWindow>
 #include <QObject>
+#include <QtWidgets>
 
-#include "mybutton.h"
 
 class MainWindow : public QMainWindow
 {

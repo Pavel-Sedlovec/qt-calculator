@@ -1,20 +1,12 @@
-#include<string>
-#include<vector>
+#include <string>
+#include <vector>
 #ifndef CORE_H
 #define CORE_H
 
+enum TokenType { MULL, DIV, PLUS, MINUS, NUMBER, LPAREN, RPAREN };
 
-enum TokenType{
-    MULL,
-    DIV,
-    PLUS,
-    MINUS,
-    NUMBER,
-    LPAREN,
-    RPAREN
-};
-
-struct Token{
+struct Token
+{
     TokenType type;
     double value;
 };
@@ -25,10 +17,12 @@ public:
     Core();
 };
 
-class Parser{
+class Parser
+{
 private:
     int pos;
     std::vector<Token> tokens;
+
 public:
     Parser(std::vector<Token> tokens);
 
@@ -40,7 +34,6 @@ public:
 
     double factor();
 };
-
 
 std::vector<Token> tokenize(std::string str);
 
