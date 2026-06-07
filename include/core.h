@@ -3,12 +3,13 @@
 #ifndef CORE_H
 #define CORE_H
 
-enum TokenType { MULL, DIV, PLUS, MINUS, NUMBER, LPAREN, RPAREN };
+enum TokenType { MULL, DIV, PLUS, MINUS, NUMBER, LPAREN, RPAREN, FUNC, FACT };
 
 struct Token
 {
     TokenType type;
     double value;
+    std::string funcName;
 };
 
 class Core

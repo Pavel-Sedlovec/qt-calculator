@@ -1,4 +1,5 @@
 #include "core.h"
+#include "parsermath.h"
 #include <cctype>
 #include <iostream>
 #include <string>
@@ -17,7 +18,7 @@ std::vector<Token> tokenize(std::string str)
             continue;
         }
 
-        if (std::isdigit(str[i]) || str[i] == ',') {
+        if (std::isdigit(str[i]) || str[i] == '.') {
             num += str[i++];
             continue;
         } else {
@@ -55,6 +56,26 @@ std::vector<Token> tokenize(std::string str)
             toc.type = RPAREN;
             tokens.push_back(toc);
         }
+        else if(std::isalpha(str[i])){
+            std::string funcName = "";
+            funcName +=str[i];
+            i++;
+            while(i < str.length() && std::isalpha(str[i])){
+                funcName +=str[i++];
+            }
+            if(funcName == "sin" || funcName == "cos" || funcName =="tan" || funcName == "log" || funcName == "ln"){
+                Token toc;
+                toc.type = FUNC;
+                toc.funcName = funcName;
+                tokens.push_back(toc);
+            }
+            continue;
+        }
+        else if(str[i] == '!'){
+            Token toc;
+            toc.type = FACT;
+            tokens.push_back(toc);
+        }
         i++;
     }
     if (num != "") {
@@ -74,6 +95,7 @@ Parser::Parser(std::vector<Token> tokens)
 
 double Parser::parse()
 {
+    if(tokens.size() <= 0) return 0.0;
     double result = expression();
     return result;
 }
@@ -118,6 +140,12 @@ double Parser::term()
 
 double Parser::factor()
 {
+    if(tokens[pos].type == FUNC){
+        std::string funcName = tokens[pos].funcName;
+        pos++;
+        double result = expression();
+        return accept_func(funcName, result);
+    }
     if (tokens[pos].type == LPAREN) {
         pos++;
         double result = expression();

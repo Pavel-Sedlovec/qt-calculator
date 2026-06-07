@@ -13,11 +13,13 @@ INCLUDEPATH += include
 SOURCES += \
     src/core.cpp \
     src/main.cpp \
-    src/mainwindow.cpp
+    src/mainwindow.cpp \
+    src/parsermath.cpp
 
 HEADERS += \
     include/core.h \
-    include/mainwindow.h
+    include/mainwindow.h \
+    include/parsermath.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
