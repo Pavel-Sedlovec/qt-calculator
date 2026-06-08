@@ -29,11 +29,13 @@ public:
 
     double parse();
 
-    double expression();
+    double parse(double x);
 
-    double term();
+    double expression(double x);
 
-    double factor();
+    double term(double x);
+
+    double factor(double x);
 };
 
 std::vector<Token> tokenize(std::string str);

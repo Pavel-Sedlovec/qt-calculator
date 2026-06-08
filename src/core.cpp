@@ -101,20 +101,29 @@ Parser::Parser(std::vector<Token> tokens)
 
 double Parser::parse()
 {
+    pos = 0;
     if(tokens.size() <= 0) return 0.0;
-    double result = expression();
+    double result = expression(0.0);
     return result;
 }
 
-double Parser::expression()
+double Parser::parse(double x)
 {
-    double first = term();
+    pos = 0;
+    if(tokens.size() <= 0) return 0.0;
+    double result = expression(x);
+    return result;
+}
+
+double Parser::expression(double x)
+{
+    double first = term(x);
 
     while (pos < tokens.size() && (tokens[pos].type == PLUS || tokens[pos].type == MINUS)) {
         TokenType op = tokens[pos].type;
         pos++;
 
-        double second = term();
+        double second = term(x);
         if (op == PLUS)
             first += second;
         if (op == MINUS)
@@ -123,15 +132,15 @@ double Parser::expression()
     return first;
 }
 
-double Parser::term()
+double Parser::term(double x)
 {
-    double first = factor();
+    double first = factor(x);
 
     while (pos < tokens.size() && (tokens[pos].type == MULL || tokens[pos].type == DIV)) {
         TokenType op = tokens[pos].type;
         pos++;
 
-        double second = factor();
+        double second = factor(x);
         if (op == MULL)
             first *= second;
         if (op == DIV) {
@@ -144,7 +153,7 @@ double Parser::term()
     return first;
 }
 
-double Parser::factor()
+double Parser::factor(double x)
 {
     double result = 0.0;
 
@@ -156,7 +165,7 @@ double Parser::factor()
         }
         pos++;
 
-        result = expression();
+        result = expression(x);
 
         if (pos >= tokens.size() || tokens[pos].type != RPAREN) {
             throw std::runtime_error("There is no closing parenthesis");
@@ -166,7 +175,7 @@ double Parser::factor()
     }
     else if (tokens[pos].type == LPAREN) {
         pos++;
-        result = expression();
+        result = expression(x);
         if (pos >= tokens.size() || tokens[pos].type != RPAREN) {
             throw std::runtime_error("There is no closing parenthesis");
         }
@@ -178,7 +187,11 @@ double Parser::factor()
     }
     else if (tokens[pos].type == MINUS) {
         pos++;
-        result = -factor();
+        result = -factor(x);
+    }
+    else if(tokens[pos].type == VARIABLE){
+        result = x;
+        pos++;
     }
     else{
         throw std::runtime_error("Syntax error");
