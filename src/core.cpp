@@ -140,31 +140,48 @@ double Parser::term()
 
 double Parser::factor()
 {
+    double result = 0.0;
+
     if(tokens[pos].type == FUNC){
         std::string funcName = tokens[pos].funcName;
         pos++;
-        double result = expression();
-        return accept_func(funcName, result);
-    }
-    if (tokens[pos].type == LPAREN) {
+        if(tokens[pos].type != LPAREN){
+            throw std::runtime_error("There is no opening parenthesis");
+        }
         pos++;
-        double result = expression();
+
+        result = expression();
+
         if (pos >= tokens.size() || tokens[pos].type != RPAREN) {
             throw std::runtime_error("There is no closing parenthesis");
         }
         pos++;
-        return result;
+        result = accept_func(funcName, result);
     }
-    if (tokens[pos].type == NUMBER) {
-        double val = tokens[pos].value;
+    else if (tokens[pos].type == LPAREN) {
         pos++;
-        return val;
+        result = expression();
+        if (pos >= tokens.size() || tokens[pos].type != RPAREN) {
+            throw std::runtime_error("There is no closing parenthesis");
+        }
+        pos++;
+    }
+    else if (tokens[pos].type == NUMBER) {
+        result = tokens[pos].value;
+        pos++;
+    }
+    else if (tokens[pos].type == MINUS) {
+        pos++;
+        result = -factor();
+    }
+    else{
+        throw std::runtime_error("Syntax error");
     }
 
-    if (tokens[pos].type == MINUS) {
+    while(pos < tokens.size() && tokens[pos].type == FACT){
         pos++;
-        return -factor();
+        result = accept_func("fact", result);
     }
-    throw std::runtime_error("Syntax error");
-    return 0;
+
+    return result;
 }
