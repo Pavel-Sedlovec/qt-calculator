@@ -1,7 +1,8 @@
-#include <string>
-#include <vector>
 #ifndef CORE_H
 #define CORE_H
+
+#include <string>
+#include <vector>
 
 enum TokenType { MULL, DIV, PLUS, MINUS, NUMBER, LPAREN, RPAREN, FUNC, FACT, VARIABLE };
 
@@ -10,6 +11,12 @@ struct Token
     TokenType type;
     double value;
     std::string funcName;
+};
+
+struct ParseResult {
+    double value = 0.0;
+    bool isSuccess = true;
+    std::string error_message;
 };
 
 class Core
@@ -25,17 +32,17 @@ private:
     std::vector<Token> tokens;
 
 public:
-    Parser(std::vector<Token> tokens);
+    Parser(std::vector<Token>& tokens);
 
-    double parse();
+    ParseResult parse();
 
-    double parse(double x);
+    ParseResult parse(double x);
 
-    double expression(double x);
+    ParseResult expression(double x);
 
-    double term(double x);
+    ParseResult term(double x);
 
-    double factor(double x);
+    ParseResult factor(double x);
 };
 
 std::vector<Token> tokenize(std::string str);

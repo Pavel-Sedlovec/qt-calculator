@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include<QDebug>
 
 Core::Core() {}
 
@@ -93,114 +94,147 @@ std::vector<Token> tokenize(std::string str)
     return tokens;
 }
 
-Parser::Parser(std::vector<Token> tokens)
+Parser::Parser(std::vector<Token>& tokens)
 {
     this->tokens = tokens;
+    qDebug() << "Adress tokens" << &tokens;
     pos = 0;
 }
 
-double Parser::parse()
+ParseResult Parser::parse()
 {
+
     pos = 0;
-    if(tokens.size() <= 0) return 0.0;
-    double result = expression(0.0);
-    return result;
+    if(tokens.size() <= 0) return {0.0, true, ""};
+    ParseResult parseResult = expression(0.0);
+    return parseResult;
 }
 
-double Parser::parse(double x)
+ParseResult Parser::parse(double x)
 {
     pos = 0;
-    if(tokens.size() <= 0) return 0.0;
-    double result = expression(x);
-    return result;
+    if(tokens.size() <= 0) return {0.0, true, ""};
+    ParseResult parseResult = expression(x);
+    return parseResult;
 }
 
-double Parser::expression(double x)
+ParseResult Parser::expression(double x)
 {
-    double first = term(x);
+    ParseResult parseResultFirst = term(x);
+    if(!parseResultFirst.isSuccess){
+        return parseResultFirst;
+    }
 
     while (pos < tokens.size() && (tokens[pos].type == PLUS || tokens[pos].type == MINUS)) {
         TokenType op = tokens[pos].type;
         pos++;
 
-        double second = term(x);
+        ParseResult parseResultSecond = term(x);
+        if(!parseResultSecond.isSuccess){
+            return parseResultSecond;
+        }
+
         if (op == PLUS)
-            first += second;
+            parseResultFirst.value += parseResultSecond.value;
         if (op == MINUS)
-            first -= second;
+            parseResultFirst.value -= parseResultSecond.value;
     }
-    return first;
+    return parseResultFirst;
 }
 
-double Parser::term(double x)
+ParseResult Parser::term(double x)
 {
-    double first = factor(x);
+    ParseResult parseResultFirst = factor(x);
 
     while (pos < tokens.size() && (tokens[pos].type == MULL || tokens[pos].type == DIV)) {
         TokenType op = tokens[pos].type;
         pos++;
 
-        double second = factor(x);
+        ParseResult parseResultSecond = factor(x);
         if (op == MULL)
-            first *= second;
+            parseResultFirst.value *= parseResultSecond.value;
         if (op == DIV) {
-            if (second == 0.0) {
-                throw std::runtime_error("Div by 0.0");
+            if (parseResultSecond.value == 0.0) {
+                return {0.0, false, "Div by 0.0"};
             }
-            first /= second;
+            parseResultFirst.value /= parseResultSecond.value;
         }
     }
-    return first;
+    return parseResultFirst;
 }
 
-double Parser::factor(double x)
+ParseResult Parser::factor(double x)
 {
-    double result = 0.0;
+    ParseResult parseResult;
+    parseResult.value = 0.0;
 
     if(tokens[pos].type == FUNC){
         std::string funcName = tokens[pos].funcName;
         pos++;
         if(tokens[pos].type != LPAREN){
-            throw std::runtime_error("There is no opening parenthesis");
+            return {0.0, false, "There is no opening parenthesis"};
         }
         pos++;
 
-        result = expression(x);
+        parseResult = expression(x);
+
+        if(!parseResult.isSuccess){
+            return parseResult;
+        }
 
         if (pos >= tokens.size() || tokens[pos].type != RPAREN) {
-            throw std::runtime_error("There is no closing parenthesis");
+            return {0.0, false, "There is no closing parenthesis"};
         }
         pos++;
-        result = accept_func(funcName, result);
+        parseResult = accept_func(funcName, parseResult.value);
+
+        if(!parseResult.isSuccess){
+            return parseResult;
+        }
     }
     else if (tokens[pos].type == LPAREN) {
         pos++;
-        result = expression(x);
+        parseResult = expression(x);
+
+        if(!parseResult.isSuccess){
+            return parseResult;
+        }
+
         if (pos >= tokens.size() || tokens[pos].type != RPAREN) {
-            throw std::runtime_error("There is no closing parenthesis");
+            return {0.0, false, "There is no closing parenthesis"};
         }
         pos++;
     }
     else if (tokens[pos].type == NUMBER) {
-        result = tokens[pos].value;
+        parseResult.value = tokens[pos].value;
         pos++;
     }
     else if (tokens[pos].type == MINUS) {
         pos++;
-        result = -factor(x);
+        parseResult = factor(x);
+        parseResult.value *= -1;
+
+        if(!parseResult.isSuccess){
+            return parseResult;
+        }
+
     }
     else if(tokens[pos].type == VARIABLE){
-        result = x;
+        parseResult.value = x;
         pos++;
     }
     else{
-        throw std::runtime_error("Syntax error");
+        return {0.0, false, "Syntax error"};
     }
 
     while(pos < tokens.size() && tokens[pos].type == FACT){
         pos++;
-        result = accept_func("fact", result);
+        parseResult = accept_func("fact", parseResult.value);
+
+        if(!parseResult.isSuccess){
+            return parseResult;
+        }
     }
 
-    return result;
+    return parseResult;
 }
