@@ -11,6 +11,7 @@ CONFIG += c++11
 INCLUDEPATH += include
 
 SOURCES += \
+    src/controller.cpp \
     src/core.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
@@ -18,6 +19,7 @@ SOURCES += \
     src/qcustomplot.cpp
 
 HEADERS += \
+    include/controller.h \
     include/core.h \
     include/mainwindow.h \
     include/parsermath.h \
