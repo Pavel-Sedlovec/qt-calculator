@@ -166,39 +166,39 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_history, &QPushButton::clicked, this, &MainWindow::OnClick);
     connect(m_parens, &QPushButton::clicked, this, &MainWindow::OnClick);
 
-    m_grid->addWidget(m_history, 0, 0);
-    m_grid->addWidget(m_clear,   0, 1);
-    m_grid->addWidget(m_parens,   0, 2);
+    m_grid->addWidget(m_lineEdit, 0, 0, 1, 6);
 
-    m_grid->addWidget(m_lineEdit, 1, 0, 1, 6);
+    m_grid->addWidget(m_sin,   1, 0);
+    m_grid->addWidget(m_cos,   1, 1);
+    m_grid->addWidget(m_tan,   1, 2);
+    m_grid->addWidget(m_log,   1, 3);
+    m_grid->addWidget(m_ln,    1, 4);
+    m_grid->addWidget(m_sqrt,  1, 5);
 
-    m_grid->addWidget(m_sin,   2, 0);
-    m_grid->addWidget(m_cos,   2, 1);
-    m_grid->addWidget(m_num_7, 2, 2);
-    m_grid->addWidget(m_num_8, 2, 3);
-    m_grid->addWidget(m_num_9, 2, 4);
-    m_grid->addWidget(m_div,   2, 5);
+    m_grid->addWidget(m_num_7, 2, 0);
+    m_grid->addWidget(m_num_8, 2, 1);
+    m_grid->addWidget(m_num_9, 2, 2);
+    m_grid->addWidget(m_div,   2, 3);
+    m_grid->addWidget(m_clear, 2, 4);
+    m_grid->addWidget(m_history, 2, 5);
 
-    m_grid->addWidget(m_tan,   3, 0);
-    m_grid->addWidget(m_log,   3, 1);
-    m_grid->addWidget(m_num_4, 3, 2);
-    m_grid->addWidget(m_num_5, 3, 3);
-    m_grid->addWidget(m_num_6, 3, 4);
-    m_grid->addWidget(m_multiply, 3, 5);
+    m_grid->addWidget(m_num_4, 3, 0);
+    m_grid->addWidget(m_num_5, 3, 1);
+    m_grid->addWidget(m_num_6, 3, 2);
+    m_grid->addWidget(m_multiply, 3, 3);
+    m_grid->addWidget(m_parens, 3, 4);
+    m_grid->addWidget(m_fact,  3, 5);
 
-    m_grid->addWidget(m_ln,    4, 0);
-    m_grid->addWidget(m_fact,  4, 1);
-    m_grid->addWidget(m_num_1, 4, 2);
-    m_grid->addWidget(m_num_2, 4, 3);
-    m_grid->addWidget(m_num_3, 4, 4);
-    m_grid->addWidget(m_minus, 4, 5);
+    m_grid->addWidget(m_num_1, 4, 0);
+    m_grid->addWidget(m_num_2, 4, 1);
+    m_grid->addWidget(m_num_3, 4, 2);
+    m_grid->addWidget(m_minus, 4, 3);
+    m_grid->addWidget(m_var_x, 4, 4);
+    m_grid->addWidget(m_dot,   4, 5);
 
-    m_grid->addWidget(m_var_x, 5, 0);
-    m_grid->addWidget(m_dot,   5, 1);
-    m_grid->addWidget(m_sqrt,   5, 2);
-    m_grid->addWidget(m_num_0, 5, 3);
-    m_grid->addWidget(m_sum,   5, 4);
-    m_grid->addWidget(m_equally, 5, 5);
+    m_grid->addWidget(m_num_0, 5, 0, 1, 2);
+    m_grid->addWidget(m_sum,   5, 2, 1, 2);
+    m_grid->addWidget(m_equally, 5, 4, 1, 2);
 
     m_grid->addWidget(m_plot, 0, 6, 6, 1);
 
@@ -210,8 +210,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_grid->setColumnStretch(6, 5);
 
-    m_grid->setRowStretch(0, 1);
-    m_grid->setRowStretch(1, 2);
+    m_grid->setRowStretch(0, 2);
+    m_grid->setRowStretch(1, 1);
     for(int i = 2; i <= 5; ++i) {
         m_grid->setRowStretch(i, 1);
     }
