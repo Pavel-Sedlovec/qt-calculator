@@ -16,6 +16,7 @@ class MainWindow : public QMainWindow
 
 public:
     int counter;
+    std::vector<std::string> vec_history;
     QWidget *m_widget;
     QGridLayout *m_grid;
     QPushButton *m_num_1;
@@ -54,10 +55,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     Controller *m_controller;
 
-    void paint_chart(std::vector<Token> vec);
-    bool check_variable(std::vector<Token> vec);
     void OnClick();
     void onClick_equally();
+    void showHistoryMenu();
     void calculateResult();
 
 

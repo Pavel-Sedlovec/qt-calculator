@@ -40,6 +40,7 @@ void MainWindow::calculateResult()
 
     if (!res.isSuccess) {
         m_lineEdit->setText("Error: " + res.errorMessage);
+        vec_history.push_back(expression+" = "+res.errorMessage.toStdString());
         return;
     }
 
@@ -53,9 +54,25 @@ void MainWindow::calculateResult()
         m_plot->replot();
 
         m_lineEdit->setText("График построен");
+        vec_history.push_back(expression + " -- График построен");
     }
     else {
         m_lineEdit->setText(QString::number(res.result));
+        vec_history.push_back(expression + " = " + std::to_string(res.result));
+    }
+}
+
+void MainWindow::showHistoryMenu(){
+    QMenu *menu = (QMenu *) sender();
+
+    menu->clear();
+    if(vec_history.empty()){
+        QAction *action = menu->addAction("История пуста");
+        return;
+    }
+    for (int i = vec_history.size() - 1; i >= 0; --i) {
+        QString historyItem = QString::fromStdString(vec_history[i]);
+        QAction *action = menu->addAction(historyItem);
     }
 }
 
@@ -79,6 +96,12 @@ MainWindow::MainWindow(QWidget *parent)
     m_lineEdit->setFont(lineEditFont);
     m_lineEdit->setAlignment(Qt::AlignRight);
     m_lineEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    QMenuBar *menuBar = this->menuBar();
+    QMenu *historyMenu = menuBar->addMenu("История");
+
+    connect(historyMenu, &QMenu::aboutToShow, this, &MainWindow::showHistoryMenu);
+
     // QRegularExpression rx("^[0-9.+\\-*/()]*$");
 
     // QRegularExpressionValidator *validator = new QRegularExpressionValidator(rx, this);
